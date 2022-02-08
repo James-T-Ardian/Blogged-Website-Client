@@ -28,7 +28,7 @@ const UserBlog = (): JSX.Element => {
             setIsOwner(response.data.isOwner)
         })
         .catch(function(error: AxiosError) {
-            if(error?.response?.status.toString() ?? "500" == "500"){
+            if(error?.response?.status.toString() == "500"){
                 navigate("/500")
             } else if (error?.response?.status.toString() == "404"){
                 navigate("/404")

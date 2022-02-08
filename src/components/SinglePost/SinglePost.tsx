@@ -22,7 +22,7 @@ const SinglePost = (): JSX.Element => {
             setBody(response.data.post[0].body)
         })
         .catch(function (error: AxiosError): void {
-            if(error?.response?.status.toString() ?? "500" == "500"){
+            if(error?.response?.status.toString()  == "500"){
                 navigate("/500")
             } else if (error?.response?.status.toString() == "404"){
                 navigate("/404")
@@ -43,7 +43,7 @@ const SinglePost = (): JSX.Element => {
             navigate(`/blog/${username}`)
         })
         .catch(function (error: AxiosError) : void {
-            if(error?.response?.status.toString() ?? "500" == "500"){
+            if(error?.response?.status.toString() == "500"){
                 navigate("/500")
             } else if(error?.response?.status.toString() == "401"){
                 navigate("/401")
@@ -61,7 +61,7 @@ const SinglePost = (): JSX.Element => {
             navigate(`/blog/${username}`)
         })
         .catch(function (error: AxiosError): void {
-            if(error?.response?.status.toString() ?? "500" == "500"){
+            if(error?.response?.status.toString() == "500"){
                 navigate("/500")
             } else if(error?.response?.status.toString() == "401"){
                 navigate("/401")

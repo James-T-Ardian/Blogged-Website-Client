@@ -1,52 +1,52 @@
-import React, {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import "./SigninForm.css"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavigateFunction } from 'react-router-dom';
 
-const axios  = require('axios')
+import axios, { AxiosError } from 'axios'
 
-const SigninForm = () => {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [webMessage, setWebMessage] = useState("")
-    const navigate = useNavigate()
+const SigninForm = (): JSX.Element => {
+    const [username, setUsername] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
+    const [webMessage, setWebMessage] = useState<string>("")
+    const navigate:NavigateFunction = useNavigate()
 
     axios.defaults.withCredentials = true
 
-    const handleUsernameChange = (event) => {
+    const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setUsername(event.target.value)
     }
 
-    const handlePasswordChange = (event) => {
+    const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setPassword(event.target.value)
     }
 
-    const handleEnterClick = () =>{
-        axios.post('http://localhost:3000/signin', {
+    const handleEnterClick: React.MouseEventHandler<HTMLButtonElement> = (): void =>{
+        axios.post('https://blogged-server.herokuapp.com/signin', {
             username: username,
             password: password
           })
-          .then(function (response) {
-            navigate(`/blog/${response.data.username}`)
+          .then(function (): void {
+            window.location.reload();
           })
-          .catch(function (error) {
-            if(error.response.status == "500"){
+          .catch(function (error: AxiosError): void {
+            if(error?.response?.status.toString() == "500"){
                 navigate("/500")
             } else {
-                setWebMessage(error.response.data.msg)
+                setWebMessage(error?.response?.data.msg ?? "Server Error")
             }
           });
     }
 
-    const handleCreateAccountClick = () =>{
+    const handleCreateAccountClick:React.MouseEventHandler<HTMLButtonElement> = (): void =>{
         navigate(`/signup`)
     }
 
-    useEffect(()=>{
-        axios.get('http://localhost:3000/signin')
-        .then(function (response) {
+    useEffect((): void =>{
+        axios.get('https://blogged-server.herokuapp.com/signin')
+        .then(function (response): void {
             navigate(`/blog/${response.data.username}`) 
           })
-          .catch(function (error) {
+          .catch(function (): void {
             // No need to handle error
           });
     }, [])

@@ -1,67 +1,73 @@
-import React, {useEffect, useState} from 'react';
-import {useParams, useNavigate, Link} from 'react-router-dom'
+import {useEffect, useState} from 'react';
+import {useParams, useNavigate, Link, NavigateFunction} from 'react-router-dom'
 import './UserBlog.css'
 
-const axios  = require('axios')
+import axios, {AxiosResponse, AxiosError} from 'axios'
 
-const UserBlog = () => {
-    const {username} = useParams()
-    const navigate = useNavigate()
-    const [posts, setPosts] = useState([])
-    const [isOwner, setIsOwner] = useState(false)
+interface Post {
+    post_id: string,
+    created_at: string,
+    title: string,
+    body: string
+}
 
-    const url = window.location.pathname.split('/').pop();
+const UserBlog = (): JSX.Element => {
+    const {username}: {[key: string]: string|undefined} = useParams()
+    const navigate: NavigateFunction = useNavigate()
+    const [posts, setPosts] = useState<Post[]>([])
+    const [isOwner, setIsOwner] = useState<boolean>(false)
+
+    const url: string|undefined = window.location.pathname.split('/').pop();
 
     axios.defaults.withCredentials = true
     
-    const loadPosts = ()=>{
-        axios.get(`http://localhost:3000/blog/${username}`)
-        .then(function(response) {
+    const loadPosts = (): void =>{
+        axios.get(`https://blogged-server.herokuapp.com/blog/${username}`)
+        .then(function(response: AxiosResponse) {
             setPosts(response.data.posts)
             setIsOwner(response.data.isOwner)
         })
-        .catch(function(error) {
-            if(error.response.status == "500"){
+        .catch(function(error: AxiosError) {
+            if(error?.response?.status.toString() ?? "500" == "500"){
                 navigate("/500")
-            } else if (error.response.status == "404"){
+            } else if (error?.response?.status.toString() == "404"){
                 navigate("/404")
             }
         })
     }
 
-    const handleEditClick = (postId)=>{
-        return function (e) {
-            navigate(`/blog/${username}/${postId}/edit`)
+    const handleEditClick = (post_id: string): React.MouseEventHandler<HTMLButtonElement> =>{
+        return function () {
+            navigate(`/blog/${username}/${post_id}/edit`)
         }
     }
 
-    const handleDeleteClick = (postId)=>{
-        return function (e) {
-            axios.delete(`http://localhost:3000/blog/${username}/${postId}`)
-            .then(function (response){
+    const handleDeleteClick = (post_id: string): React.MouseEventHandler<HTMLButtonElement> =>{
+        return function () {
+            axios.delete(`https://blogged-server.herokuapp.com/blog/${username}/${post_id}`)
+            .then(function (){
                 loadPosts()
             })
-            .catch(function (error){
-                if(error.response.status(500)){
-                    navigate("/500")
-                }
+            .catch(function (){
+                navigate("/500")
+
             })
         }
     }
 
-    const handleCreatePostClick = ()=>{
+    const handleCreatePostClick: React.MouseEventHandler<HTMLButtonElement> = (): void =>{
         navigate(`/blog/${username}/create`)
     }
 
-    useEffect(()=>{
-        axios.get('http://localhost:3000/signin')
-        .then(function (response) {
+    useEffect((): void =>{
+        axios.get('https://blogged-server.herokuapp.com/signin')
+        .then(function () {
             loadPosts()
         })
-        .catch(function (error) {
+        .catch(function () {
             navigate(`/signin`) 
         });
-    }, [url])
+    }, [url, username])
 
     return (
         <div id="blog-container">

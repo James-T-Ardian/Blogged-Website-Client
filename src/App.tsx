@@ -1,5 +1,4 @@
-import React from 'react'
-import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom'
+import {HashRouter as Router, Navigate, Route, Routes} from 'react-router-dom'
 import SigninForm from './components/SigninForm/SigninForm'
 import Navbar from './components/Navbar/Navbar'
 import UserBlog from './components/UserBlog/UserBlog'
@@ -22,7 +21,7 @@ function App() {
         <Route path = "/blog/:username" element={<UserBlog/>}></Route>
 
         {/* For seeing and editing posts */}
-        <Route path = "/blog/:username/:postId/:purpose" element={<SinglePost/>}></Route>
+        <Route path = "/blog/:username/:post_id/:purpose" element={<SinglePost/>}></Route>
         {/* For creating posts */}
         <Route path = "/blog/:username/:purpose" element={<SinglePost/>}></Route>
 

@@ -1,48 +1,47 @@
-import React, {useEffect, useState}  from "react"
+import {useEffect, useState}  from "react"
 import "./Navbar.css"
 import userIcon from './logo-images/user_icon.png'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, NavigateFunction } from 'react-router-dom'
 
-const axios  = require('axios')
+import axios, {AxiosError, AxiosResponse} from 'axios'
 
-const Navbar = () => {
-    const [username, setUsername] = useState("")
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [userSearch, setUserSearch] = useState("")
-    const navigate = useNavigate()
-    const url = window.location.pathname.split('/').pop();
+const Navbar = (): JSX.Element => {
+    const [username, setUsername] = useState<string>("")
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [userSearch, setUserSearch] = useState<string>("")
+    const navigate: NavigateFunction = useNavigate()
+    const url: string = window.location.pathname.split('/').pop() as string;
 
     axios.defaults.withCredentials = true
 
-    const handleSignOut = () => {
-        axios.post('http://localhost:3000/signout')
-        .then(function (response) {
+    const handleSignOut: React.MouseEventHandler<HTMLButtonElement> = (): void => {
+        axios.post('https://blogged-server.herokuapp.com/signout')
+        .then(function (response: AxiosResponse): void {
             setIsLoggedIn(!response.data.loggedOut)
             navigate(`/signin`) 
           })
-          .catch(function (error) {
+          .catch(function (): void {
               // No need to handle any errors
           });
     }
 
-    const handleUserSearchChange = (event)=>{
+    const handleUserSearchChange: React.ChangeEventHandler<HTMLInputElement>  = (event: React.ChangeEvent<HTMLInputElement>): void =>{
         setUserSearch(event.target.value)
     }
 
-    const handleUserSearchClick = ()=>{
+    const handleUserSearchClick: React.MouseEventHandler<HTMLButtonElement>= (): void =>{
         navigate(`/blog/${userSearch}`)
     }
 
-    useEffect(()=>{
-        axios.get('http://localhost:3000/signin')
-        .then(function (response) {
+    useEffect(() : void =>{
+        axios.get('https://blogged-server.herokuapp.com/signin')
+        .then(function (response: AxiosResponse): void {
             setUsername(response.data.username)
             setIsLoggedIn(response.data.loggedIn)
         })
-        .catch(function (error) {
-            setUsername(error.response.data.username)
-            setIsLoggedIn(error.response.data.loggedIn)
-            console.log(error)
+        .catch(function (error: AxiosError): void {
+            setUsername(error?.response?.data.username ?? "")
+            setIsLoggedIn(error?.response?.data.loggedIn ?? false)
         });
 
 

@@ -26,8 +26,7 @@ const SigninForm = (): JSX.Element => {
             password: password
           })
           .then(function (): void {
-            navigate(`/blog/${username}`)
-            //window.location.reload();
+            window.location.reload();
           })
           .catch(function (error: AxiosError): void {
             if(error?.response?.status.toString() == "500"){

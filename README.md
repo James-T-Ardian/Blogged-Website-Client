@@ -1,4 +1,4 @@
-This repository holds the Blogged-Website deployment code
+This repository holds the Blogged-Website client deployment code
 
 Development code can be found here: https://github.com/James-T-Ardian/Blogged-Website
 
